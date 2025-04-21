@@ -17,6 +17,23 @@ sai <- mutate(sai,grouped_study = recode(study,"AGES" = "DRUG","CITY"="DRUG","EM
 
 sai_filtered <- filter(sai, grouped_study %in% c("DRUG", "PLACEBO"))
 
+#FILTER TOWARDS TIME ONE 
+sai_2filtered = filter(sai_filtered, time %in% "1")
+                         
+# find non-normally distributed variable 
+
+
+# possible function for finding nonnormal data
+summarise(group_by(filter(sai_2filtered, grouped_study == "DRUG"), grouped_study), shapiro_p = shapiro.test(anxious)$p.value, .groups = "drop")
+
+
+# graph representation
+
+hist(subset(sai_2filtered, grouped_study == "DRUG")$anxious, 
+     main = "Histogram of Anxious (DRUG Group)", 
+     xlab = "Anxious Scores", col = "lightblue")
+
+
 # median differences
 
 # figuring out what new function in CRAN to introduce in our code
