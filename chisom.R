@@ -1,6 +1,7 @@
 #this is in class activity - chisom
 
-install.packages(c("dplyr", "lattice", "psych", "psychTools"))
+# install.packages(c("dplyr", "lattice", "psych", "psychTools"))
+
 library(psychTools)
 library(psych)
 library(dplyr)
@@ -26,16 +27,22 @@ sai_placebo = filter(sai_filtered, grouped_study == "PLACEBO")
 # find non-normally distributed variable - do we have to make code determining how we found this?
 
 #### Anxiety ####
+
+#inference from median difference and inference from mean difference 
+
+# find medians 
+med_drug = median(sai_drug$anxious, na.rm = TRUE)
+med_placebo = median(sai_placebo$anxious, na.rm = TRUE)
+
 # graph representation
 
-hist(subset(sai_2filtered, grouped_study == "DRUG")$anxious, 
-     main = "Histogram of Anxious (DRUG Group)", 
-     xlab = "Anxious Scores", col = "lightblue")
+hist(sai_drug$anxious)
+abline(v = med_drug, col="blue")
+hist(sai_placebo$anxious)
+abline(v = med_placebo, col="red")
 
-hist(sai$anxious[sai$grouped_study != "PLACEBO"],
-     main = "Anxiety (excluding PLACEBO)",
-     xlab = "Anxiety Score")
 # median differences
+
 
 # figuring out what new function in CRAN to introduce in our code
 
