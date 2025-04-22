@@ -13,27 +13,28 @@ force(sai)
 
 sai <- mutate(sai,grouped_study = recode(study,"AGES" = "DRUG","CITY"="DRUG","EMIT"="DRUG","SALT"="DRUG","XRAY"="DRUG","Cart" = "PLACEBO","Fast"="PLACEBO","Shed"="PLACEBO", "Raft"="PLACEBO","Shop"="PLACEBO"))
 
-#FILTER DRUG AND PLACEBO VARIABLE INTO NEW VECTOR
+#FILTER DRUG AND PLACEBO VARIABLE INTO NEW VECTOR AND BY TIME ONE 
 
-sai_filtered <- filter(sai, grouped_study %in% c("DRUG", "PLACEBO"))
-
-#FILTER TOWARDS TIME ONE 
-sai_2filtered = filter(sai_filtered, time %in% "1")
-                         
-# find non-normally distributed variable 
+sai_filtered <- filter(sai, grouped_study %in% c("DRUG", "PLACEBO"), time %in% "1")
 
 
-# possible function for finding nonnormal data
-summarise(group_by(filter(sai_2filtered, grouped_study == "DRUG"), grouped_study), shapiro_p = shapiro.test(anxious)$p.value, .groups = "drop")
+#SEPARATE INTO DATASET FOR DRUG AND PLACEBO VARIABLES 
+sai_drug = filter(sai_filtered, grouped_study == "DRUG")
+sai_placebo = filter(sai_filtered, grouped_study == "PLACEBO")
 
 
+# find non-normally distributed variable - do we have to make code determining how we found this?
+
+#### Anxiety ####
 # graph representation
 
 hist(subset(sai_2filtered, grouped_study == "DRUG")$anxious, 
      main = "Histogram of Anxious (DRUG Group)", 
      xlab = "Anxious Scores", col = "lightblue")
 
-
+hist(sai$anxious[sai$grouped_study != "PLACEBO"],
+     main = "Anxiety (excluding PLACEBO)",
+     xlab = "Anxiety Score")
 # median differences
 
 # figuring out what new function in CRAN to introduce in our code
