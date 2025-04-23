@@ -24,7 +24,6 @@ sai_drug = filter(sai_filtered, grouped_study == "DRUG")
 sai_placebo = filter(sai_filtered, grouped_study == "PLACEBO")
 
 
-# find non-normally distributed variable - do we have to make code determining how we found this?
 
 #### Anxiety Median ####
 
@@ -48,26 +47,23 @@ anxious_diff <- sai_drug$anxious - sai_placebo$anxious
 med_diff <- median(anxious_diff, na.rm = TRUE)
 
 #bootstrapping 
-boot_med_diff = matrix(,10000,1)
 
-# discrimination bootstrapping
+# median bootstrapping
 
 #omit NAs
 drug_anxious <- na.omit(sai_drug$anxious)
 placebo_anxious <- na.omit(sai_placebo$anxious)
 
-boot_med_dscr <- matrix(,10000,1)
+boot_med_diff <- matrix(,10000,1)
 
 for (reps in 1:10000) {
-  resample_drug <- sample(drug_anxious, replace = TRUE)
-  resample_placebo <- sample(placebo_anxious, replace = TRUE)
-  
-  boot_med_diff[reps] <- median(resample_drug) - median(resample_placebo)
+  resample_diff <- sample(drug_anxious - placebo_anxious, replace = TRUE)
+  boot_med_diff[reps] <-  median(resample_diff)
 }
 
 #histogram bootstrapping
 
-hist(boot_med_diff, main = "Anxious BootStrapping",
+hist(boot_med_diff, main = "Anxious Median BootStrapping",
      xlab = "Difference Amount", ylab = "Frequency")
 abline(v=quantile(boot_med_diff, c(0.025, 0.975)), col="blue")
 abline(v = med_diff, col="red")
@@ -80,14 +76,35 @@ mean_placebo = mean(sai_placebo$anxious, na.rm = TRUE)
 
 # graph representation
 hist(sai_drug$anxious)
-abline(v = mean_drug, col="blue")
+abline(v = mean_drug, col="purple")
 hist(sai_placebo$anxious)
-abline(v = mean_placebo, col="red")
+abline(v = mean_placebo, col="aquamarine")
 
 
 # mean differences
 # difference score
+
 anxious_diff <- sai_drug$anxious - sai_placebo$anxious
 
-# median difference 
+# mean difference 
+
 mean_diff <- mean(anxious_diff, na.rm = TRUE)
+
+boot_mean_diff <- matrix(,10000,1)
+
+# mean bootstrapping
+drug_anxious <- na.omit(sai_drug$anxious)
+placebo_anxious <- na.omit(sai_placebo$anxious)
+
+for (reps in 1:10000) {
+  
+  resample_diff <- sample(drug_anxious - placebo_anxious, replace = TRUE)
+  boot_mean_diff[reps] <-  mean(resample_diff)
+}
+
+
+# histogram for Anxious Mean BootStrapping
+hist(boot_mean_diff, main = "Anxious Mean BootStrapping",
+     xlab = "Difference Amount", ylab = "Frequency")
+abline(v=quantile(boot_mean_diff, c(0.025, 0.975)), col="green")
+abline(v = mean_diff, col="brown")
