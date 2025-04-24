@@ -126,4 +126,45 @@ abline(v = mean_diff, col = "brown")
 
 While examining the means values within the drug and placebo groups, we observed that our drug group possesses both higher variability and higher average anxiety scores. In contrast, our placebo groups cluster around low anxiety scores. Our bootstrapped mean difference distribution also appears to support this finding and shows these observations are likely not due to chance. 
 
+# Thought Experiment #
+
+Let's say an energy drink manufacturer is planning to promote their product as "incapable of causing anxiousness associated with caffeine over-consumption." To support this claim, they also run the same experiment with some 'tweaks'.
+
+``` {r intentional-misrepresentation}
+# Use only median differences
+mislead_med_diff <- median(drug_anxious) - median(placebo_anxious)
+
+# Bootstrap again for medians
+mislead_boot <- numeric(10000)
+for (i in 1:10000) {
+  drug_sample <- sample(drug_anxious, replace = TRUE)
+  placebo_sample <- sample(placebo_anxious, replace = TRUE)
+  pairwise_diff <- outer(drug_sample, placebo_sample, `-`)
+  mislead_boot[i] <- median(pairwise_diff)
+}
+
+# 80 % CI Instead of 95 %
+ci_bounds <- quantile(mislead_boot, c(0.10, 0.90))
+
+# Plot 
+hist(mislead_boot,
+     breaks = 50,
+     col = "lightgreen",
+     border = "gray30",
+     xlim = c(-0.05, 0.2),  # centered to make lines visible
+     main = "Our Beverage Has No Effect on Anxiety!",
+     xlab = "Difference in Anxiety (Drug - Placebo)",
+     ylab = "Frequency")
+
+# Add clearer CI lines and observed difference
+abline(v = ci_bounds, col = "blue", lty = 2, lwd = 2)
+abline(v = mislead_med_diff, col = "red", lwd = 2)
+
+# Add matching legend
+legend("topright",
+       legend = c("80% CI", "Observed Median Diff"),
+       col = c("blue", "red"),
+       lty = c(2, 1),
+       lwd = 2,
+       bty = "n")
 ```
