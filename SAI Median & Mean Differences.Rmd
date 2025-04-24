@@ -5,7 +5,7 @@ date: "2025-04-24"
 output: pdf_document
 ---
 
-```{r setup. include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(psychTools)
 library(psych)
@@ -125,3 +125,5 @@ abline(v = mean_diff, col = "brown")
 ```
 
 While examining the means values within the drug and placebo groups, we observed that our drug group possesses both higher variability and higher average anxiety scores. In contrast, our placebo groups cluster around low anxiety scores. Our bootstrapped mean difference distribution also appears to support this finding and shows these observations are likely not due to chance. 
+
+```
